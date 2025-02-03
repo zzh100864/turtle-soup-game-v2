@@ -1,0 +1,3084 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海龟汤 - 推理解谜</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --steam-dark: #171a21;
+            --steam-blue: #1b2838;
+            --steam-light: #66c0f4;
+            --steam-highlight: #c7d5e0;
+        }
+
+        body {
+            background: var(--steam-blue);
+            color: var(--steam-highlight);
+            font-family: 'Microsoft YaHei', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            background-image: linear-gradient(45deg, rgba(0,0,0,0.3) 25%, transparent 25%), 
+                            linear-gradient(-45deg, rgba(0,0,0,0.3) 25%, transparent 25%);
+            background-size: 4px 4px;
+        }
+
+        /* 添加动态背景 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(125deg, #1b2838 0%, #171a21 100%),
+                url('data:image/svg+xml,%3Csvg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z" fill="%2366c0f4" fill-opacity="0.1" fill-rule="evenodd"/%3E%3C/svg%3E');
+            animation: backgroundAnimation 30s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes backgroundAnimation {
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: 100% 100%;
+            }
+        }
+
+        .game-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(23, 26, 33, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(102, 192, 244, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(102, 192, 244, 0.3);
+            border: 1px solid rgba(102, 192, 244, 0.2);
+        }
+
+        .scenario-box {
+            background: rgba(27, 40, 56, 0.9);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--steam-light);
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(
+                135deg,
+                rgba(27, 40, 56, 0.95),
+                rgba(27, 40, 56, 0.8)
+            );
+        }
+
+        .scenario-box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 65%, rgba(102, 192, 244, 0.1));
+            pointer-events: none;
+        }
+
+        .scenario-box::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, 
+                var(--steam-light), 
+                transparent, 
+                var(--steam-light));
+            z-index: -1;
+            border-radius: 12px;
+            animation: borderGlow 3s linear infinite;
+        }
+
+        @keyframes borderGlow {
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: 200% 200%;
+            }
+        }
+
+        .question-box {
+            background: rgba(27, 40, 56, 0.8);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(102, 192, 244, 0.3);
+        }
+
+        .answer-box {
+            background: rgba(27, 40, 56, 0.8);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(102, 192, 244, 0.3);
+        }
+
+        .hint-box {
+            background: rgba(27, 40, 56, 0.8);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 77, 79, 0.3);
+        }
+
+        .game-title {
+            color: var(--steam-light);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-weight: bold;
+            text-shadow: 
+                0 0 5px rgba(102, 192, 244, 0.5),
+                0 0 10px rgba(102, 192, 244, 0.3),
+                0 0 15px rgba(102, 192, 244, 0.2);
+            font-size: 2.5rem;
+            animation: glowingText 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glowingText {
+            from {
+                text-shadow: 
+                    0 0 5px rgba(102, 192, 244, 0.5),
+                    0 0 10px rgba(102, 192, 244, 0.3),
+                    0 0 15px rgba(102, 192, 244, 0.2);
+            }
+            to {
+                text-shadow: 
+                    0 0 10px rgba(102, 192, 244, 0.7),
+                    0 0 20px rgba(102, 192, 244, 0.5),
+                    0 0 30px rgba(102, 192, 244, 0.3);
+            }
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(27, 40, 56, 0.8);
+            border-radius: 8px;
+            border: 1px solid var(--steam-light);
+        }
+
+        .stat-item {
+            text-align: center;
+            position: relative;
+        }
+
+        .stat-item h5 {
+            color: var(--steam-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item span {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--steam-highlight);
+        }
+
+        .btn-custom {
+            background: linear-gradient(to bottom, var(--steam-light), #4b89b5);
+            border: none;
+            color: var(--steam-dark);
+            font-weight: bold;
+            padding: 0.8rem 1.5rem;
+            margin: 0.5rem;
+            transition: all 0.3s;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(102, 192, 244, 0.5);
+            background: linear-gradient(to bottom, #7dcbff, var(--steam-light));
+        }
+
+        .btn-custom:disabled {
+            background: #4a5d75;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .btn-custom::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(102, 192, 244, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: buttonGlow 3s linear infinite;
+        }
+
+        @keyframes buttonGlow {
+            0% {
+                transform: rotate(45deg) translateX(-100%);
+            }
+            100% {
+                transform: rotate(45deg) translateX(100%);
+            }
+        }
+
+        .history-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 1rem;
+            background: rgba(27, 40, 56, 0.8);
+            border-radius: 8px;
+            border: 1px solid var(--steam-light);
+            scrollbar-width: thin;
+            scrollbar-color: var(--steam-light) var(--steam-blue);
+        }
+
+        .history-container::-webkit-scrollbar {
+            width: 8px;
+            background: rgba(27, 40, 56, 0.5);
+        }
+
+        .history-container::-webkit-scrollbar-track {
+            background: var(--steam-blue);
+        }
+
+        .history-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(
+                to bottom,
+                var(--steam-light),
+                rgba(102, 192, 244, 0.5)
+            );
+            border-radius: 4px;
+        }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(23, 26, 33, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid var(--steam-blue);
+            border-top: 5px solid var(--steam-light);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            box-shadow: 0 0 20px rgba(102, 192, 244, 0.3);
+        }
+
+        .input-group {
+            background: rgba(27, 40, 56, 0.95);
+            padding: 0.5rem;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid var(--steam-light);
+        }
+
+        .input-group:focus-within {
+            box-shadow: 0 0 20px rgba(102, 192, 244, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .form-control {
+            background: rgba(199, 213, 224, 0.1);
+            border: 1px solid var(--steam-light);
+            color: var(--steam-highlight);
+        }
+
+        .form-control:focus {
+            background: rgba(199, 213, 224, 0.2);
+            border-color: var(--steam-light);
+            color: var(--steam-highlight);
+            box-shadow: 0 0 10px rgba(102, 192, 244, 0.3);
+        }
+
+        .achievement {
+            position: fixed;
+            bottom: 20px;
+            right: -300px;
+            background: rgba(27, 40, 56, 0.95);
+            border: 1px solid var(--steam-light);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: right 0.5s ease-in-out;
+            z-index: 1000;
+        }
+
+        .achievement.show {
+            right: 20px;
+        }
+
+        .achievement-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--steam-light);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .game-info {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--steam-highlight);
+            font-style: italic;
+        }
+
+        .achievement-list {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(27, 40, 56, 0.8);
+            border-radius: 8px;
+            border: 1px solid var(--steam-light);
+        }
+
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem;
+            border-bottom: 1px solid rgba(102, 192, 244, 0.2);
+            background: rgba(27, 40, 56, 0.8);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .achievement-item:last-child {
+            border-bottom: none;
+        }
+
+        .achievement-item:hover {
+            transform: translateX(5px);
+            box-shadow: 
+                -5px 0 15px rgba(102, 192, 244, 0.2),
+                0 0 10px rgba(102, 192, 244, 0.1);
+            border-color: rgba(102, 192, 244, 0.4);
+        }
+
+        /* 修改模式选择的样式 */
+        .mode-selection {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            gap: 2rem;
+        }
+
+        .mode-cards {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .mode-card {
+            background: rgba(27, 40, 56, 0.9);
+            padding: 3rem;
+            border-radius: 15px;
+            border: 1px solid var(--steam-light);
+            width: 300px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            transform-style: preserve-3d;
+        }
+
+        .mode-card:hover {
+            transform: 
+                translateY(-10px) 
+                rotateX(5deg) 
+                rotateY(5deg);
+            box-shadow: 
+                0 15px 35px rgba(102, 192, 244, 0.2),
+                0 0 15px rgba(102, 192, 244, 0.3);
+        }
+
+        .mode-icon {
+            font-size: 4rem;
+            color: var(--steam-light);
+            margin-bottom: 1rem;
+        }
+
+        .mode-card h4 {
+            font-size: 1.5rem;
+            color: var(--steam-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .mode-card p {
+            color: var(--steam-highlight);
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        /* 添加动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mode-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .mode-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .room-info {
+            background: rgba(27, 40, 56, 0.9);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .player-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .player-card {
+            background: rgba(102, 192, 244, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            border: 1px solid var(--steam-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .current-player {
+            border-color: #4CAF50;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+        }
+
+        .turn-indicator {
+            color: #4CAF50;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        #modeSelection {
+            text-align: center;
+        }
+
+        #singlePlayerMode, #multiPlayerMode {
+            display: none;
+        }
+
+        .room-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .copy-button {
+            background: none;
+            border: none;
+            color: var(--steam-light);
+            cursor: pointer;
+            padding: 0;
+            margin-left: 0.5rem;
+        }
+
+        .copy-button:hover {
+            color: var(--steam-highlight);
+        }
+
+        #questionRemaining {
+            font-size: 0.8rem;
+            margin-left: 5px;
+            opacity: 0.8;
+        }
+
+        .answer-reveal {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid #4CAF50;
+        }
+
+        .category-selection {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(27, 40, 56, 0.8);
+            border-radius: 8px;
+            border: 1px solid var(--steam-light);
+        }
+
+        .category-group {
+            flex: 1;
+        }
+
+        .category-group h4 {
+            color: var(--steam-light);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-select {
+            background: rgba(199, 213, 224, 0.1);
+            border: 1px solid var(--steam-light);
+            color: var(--steam-highlight);
+            width: 100%;
+        }
+
+        .form-select:focus {
+            background: rgba(199, 213, 224, 0.2);
+            border-color: var(--steam-light);
+            color: var(--steam-highlight);
+            box-shadow: 0 0 10px rgba(102, 192, 244, 0.3);
+        }
+
+        .answer-input-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(27, 40, 56, 0.8);
+            border-radius: 8px;
+            border: 1px solid var(--steam-light);
+        }
+
+        .answer-input-box small {
+            display: block;
+            margin-top: 0.5rem;
+            color: var(--steam-highlight);
+        }
+
+        .correct-answer {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: #4CAF50;
+        }
+
+        .wrong-answer {
+            background: rgba(244, 67, 54, 0.1);
+            border-color: #F44336;
+        }
+
+        .back-to-lobby {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .back-to-lobby .btn-custom {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            background: rgba(27, 40, 56, 0.9);
+            border: 1px solid var(--steam-light);
+        }
+
+        .back-to-lobby .btn-custom:hover {
+            background: rgba(102, 192, 244, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* 在多人模式界面添加返回按钮 */
+        .back-to-lobby {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .back-to-lobby .btn-custom {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            background: rgba(27, 40, 56, 0.9);
+            border: 1px solid var(--steam-light);
+        }
+
+        .back-to-lobby .btn-custom:hover {
+            background: rgba(102, 192, 244, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* 房间状态指示器 */
+        .room-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: rgba(27, 40, 56, 0.8);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--steam-light);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-indicator i {
+            font-size: 0.8rem;
+        }
+
+        .status-indicator i.waiting {
+            color: #ffc107;
+            animation: blink 1s infinite;
+        }
+
+        .status-indicator i.playing {
+            color: #4CAF50;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0.5; }
+        }
+
+        .player-card {
+            position: relative;
+            background: rgba(27, 40, 56, 0.9);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--steam-light);
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .player-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(102, 192, 244, 0.2);
+        }
+
+        .player-card.current-player {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .host-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--steam-light);
+            color: var(--steam-dark);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .turn-indicator {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4CAF50;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        .room-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .player-stats {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .player-stats i {
+            color: var(--steam-light);
+        }
+
+        .chat-box {
+            background: rgba(27, 40, 56, 0.8);
+            border-radius: 8px;
+            border: 1px solid var(--steam-light);
+            margin-top: 1rem;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .chat-input {
+            padding: 1rem;
+            border-top: 1px solid var(--steam-light);
+        }
+
+        .game-timer {
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 1rem 0;
+            color: var(--steam-light);
+        }
+
+        /* 在房主控制区域添加 */
+        .host-controls {
+            display: none;
+        }
+
+        /* 添加语音聊天区域 */
+        .voice-chat {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        #voiceStatus {
+            background: rgba(27, 40, 56, 0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--steam-light);
+            color: var(--steam-light);
+            animation: pulse 1.5s infinite;
+        }
+
+        #voiceStatus i {
+            margin-right: 8px;
+            color: #ff4444;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        #startGameBtn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #playerCountHint {
+            margin-top: 5px;
+            color: var(--steam-light);
+        }
+
+        .turn-indicator-message {
+            background: rgba(27, 40, 56, 0.9);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: var(--steam-light);
+            border: 1px solid var(--steam-light);
+        }
+
+        .turn-indicator-message.my-turn {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: #4CAF50;
+            color: #4CAF50;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        #question:disabled, #askQuestion:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 在 roomInfo div 中添加 */
+        .chat-area {
+            margin-top: 1rem;
+            background: rgba(27, 40, 56, 0.9);
+            border: 1px solid var(--steam-light);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .chat-input-area {
+            padding: 1rem;
+            border-top: 1px solid var(--steam-light);
+        }
+
+        .input-group {
+            background: rgba(27, 40, 56, 0.95);
+            padding: 0.5rem;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid var(--steam-light);
+        }
+
+        .input-group:focus-within {
+            box-shadow: 0 0 20px rgba(102, 192, 244, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .form-control {
+            background: rgba(199, 213, 224, 0.1);
+            border: 1px solid var(--steam-light);
+            color: var(--steam-highlight);
+        }
+
+        .form-control:focus {
+            background: rgba(199, 213, 224, 0.2);
+            border-color: var(--steam-light);
+            color: var(--steam-highlight);
+            box-shadow: 0 0 10px rgba(102, 192, 244, 0.3);
+        }
+
+        .btn-custom {
+            background: linear-gradient(to bottom, var(--steam-light), #4b89b5);
+            border: none;
+            color: var(--steam-dark);
+            font-weight: bold;
+            padding: 0.8rem 1.5rem;
+            margin: 0.5rem;
+            transition: all 0.3s;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(102, 192, 244, 0.5);
+            background: linear-gradient(to bottom, #7dcbff, var(--steam-light));
+        }
+
+        .btn-custom:disabled {
+            background: #4a5d75;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .btn-custom::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(102, 192, 244, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: buttonGlow 3s linear infinite;
+        }
+
+        @keyframes buttonGlow {
+            0% {
+                transform: rotate(45deg) translateX(-100%);
+            }
+            100% {
+                transform: rotate(45deg) translateX(100%);
+            }
+        }
+
+        /* 在 style 标签中添加 */
+        .chat-area {
+            margin-top: 1rem;
+            background: rgba(27, 40, 56, 0.9);
+            border: 1px solid var(--steam-light);
+            border-radius: 8px;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .chat-input-area {
+            padding: 1rem;
+            border-top: 1px solid var(--steam-light);
+        }
+
+        .chat-message {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            max-width: 80%;
+            word-break: break-word;
+        }
+
+        .chat-message.self {
+            background: rgba(102, 192, 244, 0.1);
+            border: 1px solid var(--steam-light);
+            align-self: flex-end;
+        }
+
+        .chat-message.other {
+            background: rgba(27, 40, 56, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            align-self: flex-start;
+        }
+
+        .chat-message .sender {
+            font-size: 0.8rem;
+            color: var(--steam-light);
+            margin-bottom: 0.2rem;
+        }
+
+        .chat-message .time {
+            font-size: 0.7rem;
+            color: rgba(199, 213, 224, 0.5);
+            margin-top: 0.2rem;
+            text-align: right;
+        }
+
+        .room-list-area {
+            margin-top: 2rem;
+            background: rgba(27, 40, 56, 0.9);
+            border: 1px solid var(--steam-light);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .room-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .room-item {
+            background: rgba(27, 40, 56, 0.8);
+            border: 1px solid var(--steam-light);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .room-info {
+            flex-grow: 1;
+        }
+
+        .room-categories {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--steam-light);
+        }
+
+        .category {
+            background: rgba(102, 192, 244, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .join-btn {
+            background: linear-gradient(to bottom, var(--steam-light), #4b89b5);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            color: var(--steam-dark);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .join-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(102, 192, 244, 0.5);
+        }
+
+        .join-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 添加房主控制面板样式 */
+        .host-controls {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(27, 40, 56, 0.9);
+            border: 1px solid var(--steam-light);
+            border-radius: 8px;
+        }
+
+        .join-requests {
+            margin-top: 1rem;
+        }
+
+        .request-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border-bottom: 1px solid rgba(102, 192, 244, 0.2);
+        }
+
+        .request-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .admin-controls {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .player-card:hover .admin-controls {
+            opacity: 1;
+        }
+
+        .admin-controls .btn {
+            padding: 0.2rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .muted-badge {
+            color: #ff4444;
+            margin-left: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .player-card {
+            position: relative;
+            padding-right: 4rem;
+        }
+
+        .steam-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .steam-dialog-content {
+            background: linear-gradient(to bottom, #2a475e, #1b2838);
+            border: 1px solid var(--steam-light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            min-width: 300px;
+            max-width: 500px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .steam-dialog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--steam-light);
+        }
+
+        .dialog-title {
+            color: var(--steam-light);
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--steam-light);
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #fff;
+        }
+
+        .dialog-body {
+            color: var(--steam-highlight);
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .dialog-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .dialog-buttons .btn {
+            min-width: 80px;
+        }
+
+        /* 在多人模式的分类选择样式 */
+        .category-selection {
+            background: rgba(27, 40, 56, 0.9);
+            border: 1px solid var(--steam-light);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-group {
+            margin-bottom: 1rem;
+        }
+
+        .category-group h4 {
+            color: var(--steam-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-group select {
+            width: 100%;
+            background: rgba(27, 40, 56, 0.8);
+            border: 1px solid var(--steam-light);
+            color: var(--steam-highlight);
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+
+        .category-group select:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(102, 192, 244, 0.3);
+        }
+
+        .category-group select option {
+            background: var(--steam-blue);
+            color: var(--steam-highlight);
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">🐢 海龟汤 - 推理解谜 🍜</h1>
+        <div class="game-info">一款充满智慧与趣味的推理解谜游戏</div>
+
+        <!-- 模式选择界面 -->
+        <div class="mode-selection" id="modeSelection">
+            <div class="mode-cards">
+                <div class="mode-card" onclick="selectMode('single')">
+                    <div class="mode-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h4>单人模式</h4>
+                    <p>独自体验推理解谜的乐趣</p>
+                </div>
+                <div class="mode-card" onclick="selectMode('multi')">
+                    <div class="mode-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4>多人模式</h4>
+                    <p>与好友一起破解谜题</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 游戏内容区域 -->
+        <div id="gameContent" style="display: none;">
+            <div class="back-to-lobby">
+                <button class="btn btn-custom" onclick="backToLobby()">
+                    <i class="fas fa-arrow-left"></i> 返回大厅
+                </button>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <h5><i class="fas fa-question-circle"></i> 已问问题</h5>
+                    <span id="questionCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <h5><i class="fas fa-lightbulb"></i> 剩余提示</h5>
+                    <span id="hintCount">2</span>
+                </div>
+                <div class="stat-item">
+                    <h5><i class="fas fa-trophy"></i> 成就点数</h5>
+                    <span id="achievementPoints">0</span>
+                </div>
+            </div>
+
+            <div id="scenarioBox" class="scenario-box" style="display: none;">
+                <h4><i class="fas fa-theater-masks"></i> 当前场景</h4>
+                <p id="scenario"></p>
+            </div>
+
+            <div id="categorySelection" class="category-selection" style="display: none;">
+                <div class="category-group">
+                    <h4>故事类型</h4>
+                    <select id="storyType" class="form-select">
+                        <option value="">-- 请选择 --</option>
+                    </select>
+                </div>
+                <div class="category-group">
+                    <h4>难度等级</h4>
+                    <select id="difficulty" class="form-select">
+                        <option value="">-- 请选择 --</option>
+                    </select>
+                </div>
+                <div class="category-group">
+                    <h4>故事主题</h4>
+                    <select id="theme" class="form-select">
+                        <option value="">-- 请选择 --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <button id="startGame" class="btn btn-custom btn-lg w-100" style="display: none;">
+                    <i class="fas fa-play"></i> 开始新游戏
+                </button>
+            </div>
+
+            <div id="gameControls" style="display: none;">
+                <div class="mb-3">
+                    <label for="question" class="form-label">
+                        <i class="fas fa-question"></i> 提问（只能问是/否问题）：
+                    </label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="question" placeholder="输入你的问题...">
+                        <button class="btn btn-custom" id="askQuestion">
+                            <i class="fas fa-paper-plane"></i> 提问
+                        </button>
+                    </div>
+                </div>
+
+                <button id="requestHint" class="btn btn-custom">
+                    <i class="fas fa-lightbulb"></i> 获取提示
+                </button>
+                
+                <!-- 新增答案按钮，默认禁用 -->
+                <button id="showAnswer" class="btn btn-custom" disabled>
+                    <i class="fas fa-key"></i> 查看答案
+                    <small id="questionRemaining"></small>
+                </button>
+            </div>
+
+            <div class="history-container mt-4">
+                <h4><i class="fas fa-history"></i> 游戏记录</h4>
+                <div id="history"></div>
+            </div>
+
+            <div class="achievement-list">
+                <h4><i class="fas fa-trophy"></i> 成就列表</h4>
+                <div class="achievement-item">
+                    <div class="achievement-icon">🎯</div>
+                    <div>
+                        <h5>初次破案</h5>
+                        <p>成功解开第一个谜题</p>
+                    </div>
+                </div>
+                <div class="achievement-item">
+                    <div class="achievement-icon">🔍</div>
+                    <div>
+                        <h5>敏锐洞察</h5>
+                        <p>用不超过5个问题解开谜题</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 在游戏控制区域添加答案输入框 -->
+            <div id="answerInput" class="answer-input-box">
+                <div class="input-group">
+                    <input type="text" id="userAnswer" class="form-control" placeholder="输入你的答案...">
+                    <button class="btn btn-custom" id="submitAnswer">
+                        <i class="fas fa-paper-plane"></i> 提交答案
+                    </button>
+                </div>
+                <small id="answerAttempts" class="text-muted"></small>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading" class="loading" style="display: none;">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div id="achievement" class="achievement">
+        <div class="achievement-icon">🏆</div>
+        <div>
+            <h5>解锁新成就！</h5>
+            <p id="achievementText"></p>
+        </div>
+    </div>
+
+    <!-- 单人模式界面 -->
+    <div id="singlePlayerMode">
+        <!-- ... (原有的单人模式内容) ... -->
+    </div>
+
+    <!-- 多人模式界面 -->
+    <div id="multiPlayerMode">
+        <div class="back-to-lobby">
+            <button class="btn btn-custom" onclick="backToLobby()">
+                <i class="fas fa-arrow-left"></i> 返回大厅
+            </button>
+        </div>
+
+        <!-- 房间状态指示器 -->
+        <div class="room-status">
+            <div class="status-indicator">
+                <i class="fas fa-circle"></i> 
+                <span id="roomStatus">等待中</span>
+            </div>
+            <div class="player-count">
+                <i class="fas fa-users"></i> 
+                <span id="playerCount">1/8</span>
+            </div>
+        </div>
+        
+        <!-- 创建/加入房间 -->
+        <div id="roomJoinCreate">
+            <div class="mb-3">
+                <button class="btn btn-custom btn-lg w-100" onclick="showCreateRoom()">
+                    <i class="fas fa-plus"></i> 创建房间
+                </button>
+            </div>
+            
+            <!-- 添加玩家名称输入和房间列表 -->
+            <div class="room-list-area">
+                <div class="mb-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="playerNameInput" placeholder="请输入你的名字...">
+                    </div>
+                </div>
+                <h4><i class="fas fa-list"></i> 可用房间</h4>
+                <div id="roomList" class="room-list">
+                    <!-- 房间列表将通过 JavaScript 动态添加 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 房间信息 -->
+        <div id="roomInfo" style="display: none;">
+            <div class="room-info">
+                <h4>房间信息</h4>
+                <p>房间ID: <span id="roomId"></span> 
+                    <button class="copy-button" onclick="copyRoomId()">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </p>
+                <div class="player-list" id="playerList"></div>
+            </div>
+
+            <!-- 添加聊天区域 -->
+            <div class="chat-area">
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input-area">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="chatInput" placeholder="输入消息...">
+                        <button class="btn btn-custom" onclick="sendChatMessage()">
+                            <i class="fas fa-paper-plane"></i> 发送
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="hostControls" style="display: none;">
+                <div class="join-requests">
+                    <h5><i class="fas fa-user-plus"></i> 加入请求</h5>
+                    <div id="joinRequestsList">
+                        <!-- 加入请求将通过 JavaScript 动态添加 -->
+                    </div>
+                </div>
+                <button id="startGameBtn" class="btn btn-custom" onclick="startMultiGame()" disabled>
+                    <i class="fas fa-play"></i> 开始游戏
+                </button>
+                <div id="playerCountHint" class="text-muted small">
+                    需要2-8名玩家才能开始游戏
+                </div>
+            </div>
+        </div>
+
+        <!-- 游戏界面 -->
+        <div id="gameInterface" style="display: none;">
+            <!-- ... (与单人模式类似的游戏界面) ... -->
+        </div>
+    </div>
+
+    <!-- 添加语音聊天区域 -->
+    <div class="voice-chat">
+        <div id="voiceStatus" class="d-none">
+            <i class="fas fa-microphone"></i> 正在说话...
+        </div>
+    </div>
+
+    <!-- 添加 Steam 风格的弹框 HTML -->
+    <div id="steamDialog" class="steam-dialog" style="display: none;">
+        <div class="steam-dialog-content">
+            <div class="steam-dialog-header">
+                <h4 class="dialog-title"></h4>
+                <button class="close-btn" onclick="closeSteamDialog()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="dialog-body"></div>
+            <div class="dialog-buttons"></div>
+        </div>
+    </div>
+
+    <script>
+        // 在 apiKey 变量定义之前添加
+        const STORY_CATEGORIES = {
+            type: {
+                'horror': '恐怖惊悚',
+                'mystery': '悬疑推理',
+                'emotion': '情感故事',
+                'fantasy': '奇幻冒险',
+                'logic': '逻辑推理',
+                'career': '职业故事'
+            },
+            difficulty: {
+                'easy': '简单入门',
+                'medium': '中等难度',
+                'hard': '高难度挑战'
+            },
+            theme: {
+                'daily': '日常生活',
+                'history': '历史文化',
+                'scifi': '科幻未来',
+                'fairy': '童话神话'
+            }
+        };
+
+        let apiKey = '';
+        let currentRoom = null;
+        let isHost = false;
+        let playerName = '';
+        let currentPlayer = '';
+        let gameInterval = null;
+        const API_BASE_URL = 'http://localhost:8000';  // 本地测试用
+        let gameMode = 'single'; // 默认为单人模式
+
+        // 添加全局变量
+        let isVoiceActive = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+
+        // 修改 API 路径常量
+        const API = {
+            single: {
+                startGame: `${API_BASE_URL}/single/start_game`,
+                askQuestion: `${API_BASE_URL}/single/ask_question`,
+                requestHint: `${API_BASE_URL}/single/request_hint`,
+                getAnswer: `${API_BASE_URL}/single/get_answer`,
+                checkAnswer: `${API_BASE_URL}/single/check_answer`
+            },
+            multi: {
+                createRoom: `${API_BASE_URL}/multi/create_room`,
+                joinRoom: `${API_BASE_URL}/multi/join_room`,
+                startGame: `${API_BASE_URL}/multi/start_game`,
+                askQuestion: `${API_BASE_URL}/multi/ask_question`,
+                requestHint: `${API_BASE_URL}/multi/request_hint`,
+                getRoomStatus: `${API_BASE_URL}/multi/get_room_status`,
+                checkAnswer: `${API_BASE_URL}/multi/check_answer`,
+                sendVoice: `${API_BASE_URL}/multi/send_voice`,
+                sendMessage: `${API_BASE_URL}/multi/send_message`,
+                kickPlayer: `${API_BASE_URL}/multi/kick_player`,
+                mutePlayer: `${API_BASE_URL}/multi/mute_player`
+            }
+        };
+
+        async function getApiKey() {
+            showLoading();
+            let retries = 3;
+            while (retries > 0) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/generate_key`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    apiKey = data.api_key;
+                    hideLoading();
+                    return;
+                } catch (error) {
+                    console.error('获取API密钥失败，剩余重试次数:', retries - 1);
+                    retries--;
+                    if (retries === 0) {
+                        throw new Error('无法获取API密钥');
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 1000)); // 等待1秒后重试
+                }
+            }
+            hideLoading();
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function addToHistory(content, type) {
+            const history = document.getElementById('history');
+            const entry = document.createElement('div');
+            entry.className = `${type}-box fade-in`;
+            entry.innerHTML = content;
+            history.insertBefore(entry, history.firstChild);
+        }
+
+        function selectMode(mode) {
+            gameMode = mode;
+            document.getElementById('modeSelection').style.display = 'none';
+            
+            if (mode === 'single') {
+                document.getElementById('gameContent').style.display = 'block';
+                document.getElementById('multiPlayerMode').style.display = 'none';
+                // 显示分类选择
+                document.getElementById('categorySelection').style.display = 'block';
+                // 显示开始游戏按钮
+                document.getElementById('startGame').style.display = 'block';
+            } else {
+                document.getElementById('gameContent').style.display = 'none';
+                document.getElementById('multiPlayerMode').style.display = 'block';
+                document.getElementById('roomJoinCreate').style.display = 'block';
+                document.getElementById('roomInfo').style.display = 'none';
+                getRoomList();  // 立即获取房间列表
+            }
+        }
+
+        // 修改创建房间的对话框函数
+        async function showCreateRoom() {
+            // 获取分类选项的HTML
+            const categorySelectionHTML = `
+                <div class="category-selection">
+                    <div class="category-group">
+                        <h4>故事类型</h4>
+                        <select id="createRoomStoryType" class="form-select">
+                            <option value="">-- 请选择 --</option>
+                            ${Object.entries(STORY_CATEGORIES.type).map(([key, value]) => 
+                                `<option value="${key}">${value}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="category-group">
+                        <h4>难度等级</h4>
+                        <select id="createRoomDifficulty" class="form-select">
+                            <option value="">-- 请选择 --</option>
+                            ${Object.entries(STORY_CATEGORIES.difficulty).map(([key, value]) => 
+                                `<option value="${key}">${value}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="category-group">
+                        <h4>故事主题</h4>
+                        <select id="createRoomTheme" class="form-select">
+                            <option value="">-- 请选择 --</option>
+                            ${Object.entries(STORY_CATEGORIES.theme).map(([key, value]) => 
+                                `<option value="${key}">${value}</option>`).join('')}
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <input type="text" class="form-control" id="createRoomPlayerName" placeholder="输入你的名字...">
+                </div>
+            `;
+
+            showSteamDialog('创建房间', '选择游戏类型并输入你的名字:', [
+                {
+                    text: '创建',
+                    class: 'btn-primary',
+                    onClick: async () => {
+                        const name = document.getElementById('createRoomPlayerName').value.trim();
+                        const storyType = document.getElementById('createRoomStoryType').value;
+                        const difficulty = document.getElementById('createRoomDifficulty').value;
+                        const theme = document.getElementById('createRoomTheme').value;
+                        
+                        if (!name) {
+                            showSteamDialog('错误', '请输入有效的名字', [{
+                                text: '确定',
+                                class: 'btn-danger',
+                                onClick: () => showCreateRoom()
+                            }]);
+                            return;
+                        }
+                        
+                        await createRoom(name, storyType, difficulty, theme);
+                    }
+                },
+                {
+                    text: '取消',
+                    class: 'btn-secondary',
+                    onClick: () => {}
+                }
+            ], categorySelectionHTML);
+        }
+
+        // 修改 createRoom 函数，在创建房间成功后初始化房主控制
+        async function createRoom(name, storyType, difficulty, theme) {
+            showLoading();
+            try {
+                if (!apiKey) {
+                    await getApiKey();
+                }
+
+                const response = await fetch(API.multi.createRoom, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        X_API_KEY: apiKey,
+                        host_name: name,
+                        story_type: storyType,
+                        difficulty: difficulty,
+                        theme: theme
+                    })
+                });
+
+                const data = await response.json();
+                if (response.ok && data.status === 'success') {
+                    currentRoom = data.room_id;
+                    isHost = true;
+                    playerName = name;
+                    
+                    // 更新界面
+                    document.getElementById('roomJoinCreate').style.display = 'none';
+                    document.getElementById('roomInfo').style.display = 'block';
+                    document.getElementById('hostControls').style.display = 'block';
+                    document.getElementById('roomId').textContent = data.room_id;
+                    
+                    // 初始化房主控制
+                    updateHostControls();
+                    
+                    // 开始轮询房间状态
+                    startPollingRoomStatus();
+                    
+                    showSteamDialog('成功', '房间创建成功！', [{
+                        text: '确定',
+                        class: 'btn-primary',
+                        onClick: () => {}
+                    }]);
+                } else {
+                    throw new Error(data.message || '创建房间失败');
+                }
+            } catch (error) {
+                console.error('创建房间失败:', error);
+                showSteamDialog('错误', `创建房间失败: ${error.message}`, [{
+                    text: '重试',
+                    class: 'btn-primary',
+                    onClick: () => showCreateRoom()
+                }]);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function joinRoom() {
+            const roomId = document.getElementById('joinRoomId').value.trim();
+            const name = document.getElementById('joinPlayerName').value.trim();
+            
+            if (!roomId || !name) {
+                alert('请输入房间ID和玩家名称');
+                return;
+            }
+
+            showLoading();
+            try {
+                // 确保先获取 API key
+                if (!apiKey) {
+                    await getApiKey();
+                }
+
+                console.log('Joining room:', { roomId, name });
+                
+                const response = await fetch(API.multi.joinRoom, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        X_API_KEY: apiKey,
+                        room_id: roomId,
+                        player_name: name
+                    })
+                });
+
+                console.log('Join room response status:', response.status);
+                const data = await response.json();
+                console.log('Join room response:', data);
+
+                if (response.ok && data.status === 'success') {
+                    currentRoom = roomId;
+                    playerName = name;
+                    isHost = false;
+                    
+                    // 更新界面
+                    document.getElementById('roomJoinCreate').style.display = 'none';
+                    document.getElementById('roomInfo').style.display = 'block';
+                    document.getElementById('roomId').textContent = roomId;
+                    
+                    // 开始轮询房间状态
+                    startPollingRoomStatus();
+                    updatePlayerList(data.players);
+                    
+                    // 显示成功消息
+                    alert('成功加入房间！');
+                } else {
+                    throw new Error(data.message || data.error || '加入房间失败');
+                }
+            } catch (error) {
+                console.error('加入房间失败:', error);
+                alert(`加入房间失败: ${error.message}`);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // 添加玩家管理菜单
+        function updatePlayerList(players = []) {
+            const playerList = document.getElementById('playerList');
+            playerList.innerHTML = '';
+            
+            players.forEach(player => {
+                const playerCard = document.createElement('div');
+                playerCard.className = `player-card ${player.name === currentPlayer ? 'current-player' : ''}`;
+                
+                // 添加房主管理菜单
+                const adminControls = isHost && player.name !== playerName ? `
+                    <div class="admin-controls">
+                        <button class="btn btn-sm btn-custom" onclick="kickPlayer('${player.name}')">
+                            <i class="fas fa-user-times"></i>
+                        </button>
+                        <button class="btn btn-sm btn-custom" onclick="mutePlayer('${player.name}')">
+                            <i class="fas fa-microphone-slash"></i>
+                        </button>
+                    </div>
+                ` : '';
+                
+                const muteStatus = player.muted_until && player.muted_until > Date.now() / 1000 ? 
+                    '<span class="muted-badge"><i class="fas fa-microphone-slash"></i></span>' : '';
+                
+                playerCard.innerHTML = `
+                    ${player.is_host ? '<span class="host-badge">房主</span>' : ''}
+                    ${player.name === currentPlayer ? '<span class="turn-indicator">当前回合</span>' : ''}
+                    <h5>${player.name} ${muteStatus}</h5>
+                    <div class="player-stats">
+                        <i class="fas fa-star"></i> ${player.score} 分
+                        <i class="fas fa-question-circle"></i> ${player.questions || 0} 问题
+                    </div>
+                    ${adminControls}
+                `;
+                
+                playerList.appendChild(playerCard);
+            });
+        }
+
+        // 添加踢人功能
+        async function kickPlayer(playerName) {
+            if (!confirm(`确定要将 ${playerName} 踢出房间吗？`)) return;
+            
+            try {
+                const response = await fetch(API.multi.kickPlayer, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        X_API_KEY: apiKey,
+                        room_id: currentRoom,
+                        host_name: playerName,
+                        player_name: playerName
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.status === 'success') {
+                    alert(data.message);
+                } else {
+                    throw new Error(data.message || '操作失败');
+                }
+            } catch (error) {
+                console.error('踢出玩家失败:', error);
+                alert(error.message || '踢出玩家失败');
+            }
+        }
+
+        // 添加禁言功能
+        async function mutePlayer(playerName) {
+            const duration = prompt('请输入禁言时长（分钟）:', '5');
+            if (!duration) return;
+            
+            try {
+                const response = await fetch(API.multi.mutePlayer, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        X_API_KEY: apiKey,
+                        room_id: currentRoom,
+                        host_name: playerName,
+                        player_name: playerName,
+                        duration: parseInt(duration) * 60
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.status === 'success') {
+                    alert(data.message);
+                } else {
+                    throw new Error(data.message || '操作失败');
+                }
+            } catch (error) {
+                console.error('禁言玩家失败:', error);
+                alert(error.message || '禁言玩家失败');
+            }
+        }
+
+        function startPollingRoomStatus() {
+            if (gameInterval) {
+                clearInterval(gameInterval);
+            }
+            gameInterval = setInterval(pollRoomStatus, 3000);
+            pollRoomStatus(); // 立即执行一次
+        }
+
+        async function pollRoomStatus() {
+            if (!currentRoom) return;
+            
+            try {
+                const response = await fetch(API.multi.getRoomStatus, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        X_API_KEY: apiKey,
+                        room_id: currentRoom
+                    })
+                });
+
+                const data = await response.json();
+                if (data.status === 'success') {
+                    updateRoomStatus(data.room_status);
+                    updatePlayerCount(data.players.length);
+                    updatePlayerList(data.players);
+                    
+                    // 如果是房主，更新加入请求列表
+                    if (isHost && data.join_requests) {
+                        updateJoinRequests(data.join_requests);
+                    }
+                    
+                    // 更新开始游戏按钮状态（仅房主可见）
+                    if (isHost) {
+                        const startGameBtn = document.getElementById('startGameBtn');
+                        if (startGameBtn) {
+                            const playerCount = data.players.length;
+                            // 修改这里：当玩家数量在2-8人之间且游戏未开始时，启用开始按钮
+                            startGameBtn.disabled = playerCount < 2 || playerCount > 8 || data.room_status === 'playing';
+                            document.getElementById('playerCountHint').textContent = 
+                                data.room_status === 'playing' ? '游戏进行中' :
+                                playerCount < 2 ? '至少需要2名玩家' :
+                                playerCount > 8 ? '最多允许8名玩家' :
+                                '可以开始游戏';
+                        }
+                    }
+                    
+                    // 如果游戏已经开始，确保所有玩家都能看到游戏界面
+                    if (data.room_status === 'playing' && data.current_scenario) {
+                        if (document.getElementById('gameContent').style.display === 'none') {
+                            showGameInterface({
+                                scenario: data.current_scenario,
+                                hint_count: data.hint_count
+                            });
+                        }
+                        
+                        // 更新场景文本
+                        document.getElementById('scenario').textContent = data.current_scenario;
+                        
+                        // 更新当前玩家状态
+                        updateCurrentPlayer(data.current_player);
+                    }
+                    
+                    // 更新聊天消息
+                    updateChatMessages(data.chat_messages);
+                }
+            } catch (error) {
+                console.error('获取房间状态失败:', error);
+            }
+        }
+
+        function copyRoomId() {
+            const roomId = document.getElementById('roomId').textContent;
+            navigator.clipboard.writeText(roomId);
+            alert('房间ID已复制到剪贴板');
+        }
+
+        async function startGame() {
+            showLoading();
+            try {
+                // 确保 API key 存在
+                if (!apiKey) {
+                    await getApiKey();
+                }
+
+                const url = gameMode === 'single' ? API.single.startGame : API.multi.startGame;
+                const storyType = document.getElementById('storyType').value;
+                const difficulty = document.getElementById('difficulty').value;
+                const theme = document.getElementById('theme').value;
+                
+                console.log('Starting game with:', { gameMode, storyType, difficulty, theme }); // 调试日志
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        X_API_KEY: apiKey,
+                        room_id: currentRoom,
+                        player_name: playerName,
+                        story_type: storyType,
+                        difficulty: difficulty,
+                        theme: theme
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Game start response:', data); // 调试日志
+                
+                if (data.status === 'success') {
+                    document.getElementById('scenario').textContent = data.scenario;
+                    document.getElementById('scenarioBox').style.display = 'block';
+                    document.getElementById('gameControls').style.display = 'block';
+                    document.getElementById('startGame').textContent = '重新开始';
+                    document.getElementById('hintCount').textContent = data.hint_count;
+                    document.getElementById('questionCount').textContent = '0';
+                    document.getElementById('history').innerHTML = '';
+                    addToHistory(`<strong>新游戏开始！</strong><br>场景：${data.scenario}`, 'scenario');
+                    
+                    // 重置答案相关状态
+                    const showAnswerBtn = document.getElementById('showAnswer');
+                    showAnswerBtn.disabled = true;
+                    document.getElementById('questionRemaining').textContent = '(还需20个问题)';
+                    if (data.answer_attempts) {
+                        document.getElementById('answerAttempts').textContent = 
+                            `剩余尝试次数：${data.answer_attempts}`;
+                    }
+                } else {
+                    throw new Error(data.message || '开始游戏失败');
+                }
+            } catch (error) {
+                console.error('开始游戏失败:', error);
+                alert('开始游戏失败: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function askQuestion() {
+            const questionInput = document.getElementById('question');
+            const question = questionInput.value.trim();
+            
+            if (!question) {
+                alert('请输入问题');
+                return;
+            }
+
+            showLoading();
+            try {
+                const url = gameMode === 'single' ? API.single.askQuestion : API.multi.askQuestion;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        X_API_KEY: apiKey,
+                        question: question,
+                        room_id: currentRoom,
+                        player_name: playerName
+                    })
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    updateQuestionCount(data.question_count);
+                    addToHistory(`<strong>Q: ${question}</strong><br>A: ${data.answer}`, 'question');
+                } else {
+                    alert(data.message || '提问失败');
+                }
+                questionInput.value = '';
+            } catch (error) {
+                console.error('提问失败:', error);
+                alert('提问失败，请重试');
+            }
+            hideLoading();
+        }
+
+        async function requestHint() {
+            showLoading();
+            try {
+                const url = gameMode === 'single' ? API.single.requestHint : API.multi.requestHint;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        X_API_KEY: apiKey,
+                        room_id: currentRoom,
+                        player_name: playerName
+                    })
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    document.getElementById('hintCount').textContent = data.remaining_hints;
+                    addToHistory(`<strong>提示：</strong><br>${data.hint}`, 'hint');
+                } else {
+                    alert(data.message || '获取提示失败');
+                }
+            } catch (error) {
+                console.error('获取提示失败:', error);
+                alert('获取提示失败，请重试');
+            }
+            hideLoading();
+        }
+
+        // 添加成就系统
+        function showAchievement(title) {
+            const achievement = document.getElementById('achievement');
+            document.getElementById('achievementText').textContent = title;
+            achievement.classList.add('show');
+            
+            setTimeout(() => {
+                achievement.classList.remove('show');
+            }, 3000);
+            
+            // 更新成就点数
+            const points = document.getElementById('achievementPoints');
+            points.textContent = parseInt(points.textContent) + 10;
+        }
+
+        // 更新问题计数和答案按钮状态的函数
+        function updateQuestionCount(count) {
+            const questionCount = document.getElementById('questionCount');
+            const showAnswerBtn = document.getElementById('showAnswer');
+            const questionRemaining = document.getElementById('questionRemaining');
+            
+            questionCount.textContent = count;
+            
+            if (gameMode === 'single') {
+                const remainingQuestions = 20 - count;
+                if (remainingQuestions > 0) {
+                    showAnswerBtn.disabled = true;
+                    questionRemaining.textContent = `(还需${remainingQuestions}个问题)`;
+                } else {
+                    showAnswerBtn.disabled = false;
+                    questionRemaining.textContent = '(可查看答案)';
+                }
+            }
+        }
+
+        // 获取答案的函数
+        async function showAnswer() {
+            showLoading();
+            try {
+                const response = await fetch(API.single.getAnswer, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        X_API_KEY: apiKey
+                    })
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    addToHistory(`<strong>最终答案：</strong><br>${data.answer}`, 'answer-reveal');
+                } else {
+                    alert(data.message || '获取答案失败');
+                }
+            } catch (error) {
+                console.error('获取答案失败:', error);
+                alert('获取答案失败，请重试');
+            }
+            hideLoading();
+        }
+
+        // 在初始化时加载分类数据
+        async function loadCategories() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/get_categories`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const categories = await response.json();
+                console.log('Loaded categories:', categories); // 调试日志
+                
+                const storyTypeSelect = document.getElementById('storyType');
+                const difficultySelect = document.getElementById('difficulty');
+                const themeSelect = document.getElementById('theme');
+                
+                // 清空现有选项
+                storyTypeSelect.innerHTML = '<option value="">-- 请选择 --</option>';
+                difficultySelect.innerHTML = '<option value="">-- 请选择 --</option>';
+                themeSelect.innerHTML = '<option value="">-- 请选择 --</option>';
+                
+                // 填充选项
+                if (categories.type) {
+                    Object.entries(categories.type).forEach(([key, value]) => {
+                        const option = document.createElement('option');
+                        option.value = key;
+                        option.textContent = value;
+                        storyTypeSelect.appendChild(option);
+                    });
+                }
+                
+                if (categories.difficulty) {
+                    Object.entries(categories.difficulty).forEach(([key, value]) => {
+                        const option = document.createElement('option');
+                        option.value = key;
+                        option.textContent = value;
+                        difficultySelect.appendChild(option);
+                    });
+                }
+                
+                if (categories.theme) {
+                    Object.entries(categories.theme).forEach(([key, value]) => {
+                        const option = document.createElement('option');
+                        option.value = key;
+                        option.textContent = value;
+                        themeSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('加载分类失败:', error);
+                alert('加载分类失败，请刷新页面重试');
+            }
+        }
+
+        // 添加提交答案的函数
+        async function submitAnswer() {
+            const answerInput = document.getElementById('userAnswer');
+            const answer = answerInput.value.trim();
+            
+            if (!answer) {
+                alert('请输入答案');
+                return;
+            }
+
+            showLoading();
+            try {
+                const url = gameMode === 'single' ? API.single.checkAnswer : API.multi.checkAnswer;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        X_API_KEY: apiKey,
+                        answer: answer,
+                        room_id: currentRoom,
+                        player_name: playerName
+                    })
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const className = data.is_correct ? 'correct-answer' : 'wrong-answer';
+                    addToHistory(`<strong>你的答案：</strong><br>${answer}<br><strong>结果：</strong>${data.message}`, className);
+                    document.getElementById('answerAttempts').textContent = 
+                        `剩余尝试次数：${data.remaining_attempts}`;
+                    
+                    if (data.is_correct) {
+                        showAchievement('解谜成功！');
+                        setTimeout(() => {
+                            if (confirm('恭喜你答对了！要开始新的游戏吗？')) {
+                                startGame();
+                            }
+                        }, 1500);
+                    }
+                    
+                    answerInput.value = '';
+                } else {
+                    alert(data.message || '提交答案失败');
+                }
+            } catch (error) {
+                console.error('提交答案失败:', error);
+                alert('提交答案失败，请重试');
+            }
+            hideLoading();
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await getApiKey();
+                console.log('API key obtained:', apiKey ? 'Yes' : 'No');
+                
+                if (!apiKey) {
+                    throw new Error('无法获取API密钥');
+                }
+                
+                await loadCategories();
+                
+                document.getElementById('startGame').addEventListener('click', startGame);
+                document.getElementById('askQuestion').addEventListener('click', askQuestion);
+                document.getElementById('requestHint').addEventListener('click', requestHint);
+                document.getElementById('showAnswer').addEventListener('click', showAnswer);
+                document.getElementById('submitAnswer').addEventListener('click', submitAnswer);
+                
+                document.getElementById('question').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        askQuestion();
+                    }
+                });
+
+                document.getElementById('userAnswer').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        submitAnswer();
+                    }
+                });
+            } catch (error) {
+                console.error('初始化失败:', error);
+                alert('初始化失败，请刷新页面重试');
+            }
+        });
+
+        function backToLobby() {
+            if (confirm('确定要返回大厅吗？当前游戏进度将不会保存。')) {
+                // 清除计时器
+                if (gameTimer) {
+                    clearInterval(gameTimer);
+                    gameTimer = null;
+                }
+                
+                // 清除轮询
+                if (gameInterval) {
+                    clearInterval(gameInterval);
+                    gameInterval = null;
+                }
+                
+                // 重置状态
+                document.getElementById('gameContent').style.display = 'none';
+                document.getElementById('multiPlayerMode').style.display = 'none';
+                document.getElementById('modeSelection').style.display = 'flex';
+                document.getElementById('history').innerHTML = '';
+                document.getElementById('scenarioBox').style.display = 'none';
+                document.getElementById('gameControls').style.display = 'none';
+                
+                // 重置计数器
+                document.getElementById('questionCount').textContent = '0';
+                document.getElementById('hintCount').textContent = '2';
+                
+                // 清空输入
+                document.getElementById('question').value = '';
+                document.getElementById('userAnswer').value = '';
+                document.getElementById('joinRoomId').value = '';
+                document.getElementById('joinPlayerName').value = '';
+                
+                // 重置变量
+                currentRoom = null;
+                isHost = false;
+                playerName = '';
+                currentPlayer = '';
+            }
+        }
+
+        // 添加多人模式的功能
+        function updateRoomStatus(status) {
+            const statusIcon = document.querySelector('.status-indicator i');
+            const statusText = document.getElementById('roomStatus');
+            
+            if (status === 'waiting') {
+                statusIcon.className = 'fas fa-circle waiting';
+                statusText.textContent = '等待玩家加入...';
+            } else if (status === 'playing') {
+                statusIcon.className = 'fas fa-circle playing';
+                statusText.textContent = '游戏进行中';
+            }
+        }
+
+        function updatePlayerCount(current, max = 8) {
+            document.getElementById('playerCount').textContent = `${current}/${max}`;
+        }
+
+        // 添加游戏计时器
+        let gameTimer;
+        function startGameTimer() {
+            let seconds = 0;
+            const timerElement = document.createElement('div');
+            timerElement.className = 'game-timer';
+            document.querySelector('.room-info').appendChild(timerElement);
+            
+            gameTimer = setInterval(() => {
+                seconds++;
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                timerElement.textContent = `游戏时间: ${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // 修改 startMultiGame 函数，添加错误检查
+        async function startMultiGame() {
+            try {
+                if (!currentRoom || !playerName) {
+                    throw new Error('房间信息不完整');
+                }
+
+                // 获取游戏类型选择
+                const storyTypeSelect = document.getElementById('multiStoryType');
+                const difficultySelect = document.getElementById('multiDifficulty');
+                const themeSelect = document.getElementById('multiTheme');
+
+                if (!storyTypeSelect || !difficultySelect || !themeSelect) {
+                    throw new Error('游戏设置控件未正确初始化');
+                }
+
+                const storyType = storyTypeSelect.value;
+                const difficulty = difficultySelect.value;
+                const theme = themeSelect.value;
+
+                if (!storyType || !difficulty || !theme) {
+                    throw new Error('请选择游戏类型、难度和主题');
+                }
+
+                console.log('Starting multiplayer game:', { currentRoom, playerName, storyType, difficulty, theme });
+
+                const response = await fetch(API.multi.startGame, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        X_API_KEY: apiKey,
+                        room_id: currentRoom,
+                        player_name: playerName,
+                        story_type: storyType,
+                        difficulty: difficulty,
+                        theme: theme
+                    })
+                });
+
+                const data = await response.json();
+                if (response.ok && data.status === 'success') {
+                    // 更新游戏状态
+                    document.getElementById('startGameBtn').disabled = true;
+                    updateRoomStatus('playing');
+                    
+                    // 显示游戏内容给所有玩家
+                    showGameInterface(data);
+
+                    // 根据玩家数量设置所需问题数
+                    const requiredQuestions = data.player_count === 2 ? 15 : 20;
+                    const questionRemainingElement = document.getElementById('questionRemaining');
+                    if (questionRemainingElement) {
+                        questionRemainingElement.textContent = `(还需${requiredQuestions}个问题)`;
+                    }
+                    
+                    // 保存所需问题数到全局变量
+                    window.requiredQuestions = requiredQuestions;
+                } else {
+                    throw new Error(data.message || data.error || '开始游戏失败');
+                }
+            } catch (error) {
+                console.error('开始游戏失败:', error);
+                showSteamDialog('错误', `开始游戏失败: ${error.message}`, [{
+                    text: '确定',
+                    class: 'btn-danger',
+                    onClick: () => {}
+                }]);
+            }
+        }
+
+        // 修改 updateQuestionCount 函数
+        function updateQuestionCount(count) {
+            const questionCount = document.getElementById('questionCount');
+            const showAnswerBtn = document.getElementById('showAnswer');
+            const questionRemaining = document.getElementById('questionRemaining');
+            
+            questionCount.textContent = count;
+            
+            // 获取当前所需问题数（默认20，两人时为15）
+            const requiredQuestions = window.requiredQuestions || 20;
+            
+            const remainingQuestions = requiredQuestions - count;
+            if (remainingQuestions > 0) {
+                showAnswerBtn.disabled = true;
+                questionRemaining.textContent = `(还需${remainingQuestions}个问题)`;
+            } else {
+                showAnswerBtn.disabled = false;
+                questionRemaining.textContent = '(可查看答案)';
+            }
+        }
+
+        // 在房主控制区域添加游戏类型选择
+        function updateHostControls() {
+            const hostControls = document.getElementById('hostControls');
+            if (!hostControls || hostControls.querySelector('.category-selection')) return;
+
+            // 添加游戏类型选择界面
+            const categorySelection = `
+                <div class="category-selection">
+                    <div class="category-group">
+                        <h4>故事类型</h4>
+                        <select id="multiStoryType" class="form-select">
+                            <option value="">-- 请选择 --</option>
+                            ${Object.entries(STORY_CATEGORIES.type).map(([key, value]) => 
+                                `<option value="${key}">${value}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="category-group">
+                        <h4>难度等级</h4>
+                        <select id="multiDifficulty" class="form-select">
+                            <option value="">-- 请选择 --</option>
+                            ${Object.entries(STORY_CATEGORIES.difficulty).map(([key, value]) => 
+                                `<option value="${key}">${value}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="category-group">
+                        <h4>故事主题</h4>
+                        <select id="multiTheme" class="form-select">
+                            <option value="">-- 请选择 --</option>
+                            ${Object.entries(STORY_CATEGORIES.theme).map(([key, value]) => 
+                                `<option value="${key}">${value}</option>`).join('')}
+                        </select>
+                    </div>
+                </div>
+            `;
+
+            // 在开始游戏按钮前插入类型选择
+            const startGameBtn = hostControls.querySelector('#startGameBtn');
+            if (startGameBtn) {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.innerHTML = categorySelection;
+                hostControls.insertBefore(categoryDiv, startGameBtn);
+
+                // 添加选择验证
+                const validateGameSettings = () => {
+                    const storyType = document.getElementById('multiStoryType')?.value;
+                    const difficulty = document.getElementById('multiDifficulty')?.value;
+                    const theme = document.getElementById('multiTheme')?.value;
+                    const playerCount = document.querySelectorAll('.player-card').length;
+
+                    const startGameBtn = document.getElementById('startGameBtn');
+                    if (startGameBtn) {
+                        startGameBtn.disabled = !storyType || !difficulty || !theme || playerCount < 2 || playerCount > 8;
+                    }
+
+                    const hint = document.getElementById('playerCountHint');
+                    if (hint) {
+                        if (!storyType || !difficulty || !theme) {
+                            hint.textContent = '请选择游戏类型、难度和主题';
+                        } else if (playerCount < 2) {
+                            hint.textContent = '至少需要2名玩家';
+                        } else if (playerCount > 8) {
+                            hint.textContent = '最多允许8名玩家';
+                        } else {
+                            hint.textContent = '可以开始游戏';
+                        }
+                    }
+                };
+
+                // 添加选择事件监听
+                document.getElementById('multiStoryType')?.addEventListener('change', validateGameSettings);
+                document.getElementById('multiDifficulty')?.addEventListener('change', validateGameSettings);
+                document.getElementById('multiTheme')?.addEventListener('change', validateGameSettings);
+            }
+        }
+
+        // 修改 showGameInterface 函数
+        function showGameInterface(data) {
+            // ... 现有代码 ...
+
+            // 添加玩家数量和所需问题数的显示
+            const playerCount = data.player_count || 2;
+            const requiredQuestions = playerCount === 2 ? 15 : 20;
+            window.requiredQuestions = requiredQuestions;
+
+            // 更新问题计数显示
+            document.getElementById('questionRemaining').textContent = `(还需${requiredQuestions}个问题)`;
+            
+            // 如果是房主，显示当前游戏设置
+            if (isHost) {
+                const gameSettings = document.createElement('div');
+                gameSettings.className = 'game-settings';
+                gameSettings.innerHTML = `
+                    <div class="mt-3 mb-3">
+                        <h5>当前游戏设置</h5>
+                        <p>
+                            类型: ${STORY_CATEGORIES.type[data.story_type] || '未设置'}<br>
+                            难度: ${STORY_CATEGORIES.difficulty[data.difficulty] || '未设置'}<br>
+                            主题: ${STORY_CATEGORIES.theme[data.theme] || '未设置'}<br>
+                            所需问题数: ${requiredQuestions}
+                        </p>
+                    </div>
+                `;
+                document.getElementById('scenarioBox').appendChild(gameSettings);
+            }
+        }
+
+        // 在房间创建时初始化房主控制
+        function initializeHostControls() {
+            if (isHost) {
+                updateHostControls();
+            }
+        }
+
+        // 添加显示游戏界面的函数
+        function showGameInterface(data) {
+            // 隐藏房间创建/加入界面
+            document.getElementById('roomJoinCreate').style.display = 'none';
+            
+            // 显示游戏内容
+            document.getElementById('gameContent').style.display = 'block';
+            document.getElementById('scenarioBox').style.display = 'block';
+            document.getElementById('scenario').textContent = data.scenario;
+            document.getElementById('gameControls').style.display = 'block';
+            
+            // 重置游戏计数器
+            document.getElementById('questionCount').textContent = '0';
+            document.getElementById('hintCount').textContent = data.hint_count;
+            
+            // 清空历史记录
+            document.getElementById('history').innerHTML = '';
+            addToHistory(`<strong>新游戏开始！</strong><br>场景：${data.scenario}`, 'scenario');
+            
+            // 开始游戏计时器
+            startGameTimer();
+        }
+
+        // 添加更新当前玩家的函数
+        function updateCurrentPlayer(currentPlayerName) {
+            const isMyTurn = currentPlayerName === playerName;
+            
+            // 更新问题输入控件状态
+            document.getElementById('question').disabled = !isMyTurn;
+            document.getElementById('askQuestion').disabled = !isMyTurn;
+            
+            // 更新当前玩家提示
+            const turnIndicator = document.getElementById('turnIndicator') || createTurnIndicator();
+            turnIndicator.textContent = isMyTurn ? 
+                '现在是你的回合，请提问' : 
+                `现在是 ${currentPlayerName} 的回合`;
+            turnIndicator.className = `turn-indicator-message ${isMyTurn ? 'my-turn' : ''}`;
+        }
+
+        // 创建回合提示元素
+        function createTurnIndicator() {
+            const turnIndicator = document.createElement('div');
+            turnIndicator.id = 'turnIndicator';
+            turnIndicator.className = 'turn-indicator-message';
+            const gameControls = document.getElementById('gameControls');
+            gameControls.insertBefore(turnIndicator, gameControls.firstChild);
+            return turnIndicator;
+        }
+
+        // 添加语音聊天功能
+        document.addEventListener('keydown', async (e) => {
+            if (e.key.toLowerCase() === 't' && !isVoiceActive) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    isVoiceActive = true;
+                    document.getElementById('voiceStatus').classList.remove('d-none');
+                    
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    
+                    mediaRecorder.ondataavailable = (event) => {
+                        audioChunks.push(event.data);
+                    };
+                    
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/ogg; codecs=opus' });
+                        sendVoiceMessage(audioBlob);
+                    };
+                    
+                    mediaRecorder.start();
+                } catch (error) {
+                    console.error('无法访问麦克风:', error);
+                    alert('无法访问麦克风，请检查权限设置');
+                }
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key.toLowerCase() === 't' && isVoiceActive) {
+                isVoiceActive = false;
+                document.getElementById('voiceStatus').classList.add('d-none');
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    mediaRecorder.stop();
+                    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                }
+            }
+        });
+
+        // 发送语音消息
+        async function sendVoiceMessage(audioBlob) {
+            try {
+                const formData = new FormData();
+                formData.append('audio', audioBlob);
+                formData.append('room_id', currentRoom);
+                formData.append('player_name', playerName);
+                formData.append('X_API_KEY', apiKey);
+                
+                const response = await fetch(API.multi.sendVoice, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                if (!data.status === 'success') {
+                    console.error('发送语音消息失败:', data.message);
+                }
+            } catch (error) {
+                console.error('发送语音消息失败:', error);
+            }
+        }
+
+        // 添加发送聊天消息的函数
+        async function sendChatMessage() {
+            const chatInput = document.getElementById('chatInput');
+            const message = chatInput.value.trim();
+            
+            if (!message) return;
+            
+            // 检查是否被禁言
+            const player = currentRoom?.players?.find(p => p.name === playerName);
+            if (player?.muted_until && player.muted_until > Date.now() / 1000) {
+                const remainingTime = Math.ceil((player.muted_until - Date.now() / 1000) / 60);
+                alert(`你已被禁言，还剩 ${remainingTime} 分钟`);
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/multi/send_message`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        X_API_KEY: apiKey,
+                        room_id: currentRoom,
+                        player_name: playerName,
+                        message: message
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.status === 'success') {
+                    chatInput.value = '';
+                }
+            } catch (error) {
+                console.error('发送消息失败:', error);
+            }
+        }
+
+        // 添加更新聊天消息的函数
+        function updateChatMessages(messages) {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '';
+            
+            messages.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message ${msg.sender === playerName ? 'self' : 'other'}`;
+                messageDiv.innerHTML = `
+                    <div class="sender">${msg.sender}</div>
+                    <div class="content">${msg.content}</div>
+                    <div class="time">${msg.time}</div>
+                `;
+                chatMessages.appendChild(messageDiv);
+            });
+            
+            // 滚动到最新消息
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // 添加回车发送消息的功能
+        document.getElementById('chatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        });
+
+        // 修改获取房间列表的函数
+        async function getRoomList() {
+            try {
+                if (!apiKey) {
+                    await getApiKey();
+                }
+                
+                const response = await fetch(`${API_BASE_URL}/multi/get_rooms`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        X_API_KEY: apiKey
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('Get rooms response:', data);  // 添加调试日志
+                
+                if (data.status === 'success') {
+                    updateRoomList(data.rooms);
+                } else {
+                    console.error('获取房间列表失败:', data.message);
+                }
+            } catch (error) {
+                console.error('获取房间列表失败:', error);
+            }
+        }
+
+        // 修改请求加入房间的函数
+        async function requestJoinRoom(roomId) {
+            try {
+                const playerNameInput = document.getElementById('playerNameInput');
+                const name = playerNameInput.value.trim();
+                
+                if (!name) {
+                    alert('请先输入你的名字');
+                    playerNameInput.focus();
+                    return;
+                }
+                
+                showLoading();
+                
+                const response = await fetch(`${API_BASE_URL}/multi/request_join`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        X_API_KEY: apiKey,
+                        room_id: roomId,
+                        player_name: name
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.status === 'success') {
+                    playerName = name; // 保存玩家名称
+                    currentRoom = roomId; // 保存房间ID
+                    
+                    // 更新界面
+                    document.getElementById('roomJoinCreate').style.display = 'none';
+                    document.getElementById('roomInfo').style.display = 'block';
+                    document.getElementById('roomId').textContent = roomId;
+                    
+                    // 开始轮询房间状态
+                    startPollingRoomStatus();
+                    
+                    alert('已发送加入请求，等待房主审核');
+                } else {
+                    throw new Error(data.message || '请求加入失败');
+                }
+            } catch (error) {
+                console.error('请求加入房间失败:', error);
+                alert(error.message || '请求加入房间失败');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // 修改更新房间列表的函数
+        function updateRoomList(rooms) {
+            const roomList = document.getElementById('roomList');
+            roomList.innerHTML = '';
+            
+            if (rooms.length === 0) {
+                roomList.innerHTML = '<div class="text-center p-3">当前没有可用的房间</div>';
+                return;
+            }
+            
+            rooms.forEach(room => {
+                const roomDiv = document.createElement('div');
+                roomDiv.className = 'room-item';
+                roomDiv.innerHTML = `
+                    <div class="room-info">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="room-id">房间ID: ${room.room_id}</span>
+                            <span class="player-count">
+                                <i class="fas fa-users"></i> ${room.player_count}/8
+                            </span>
+                        </div>
+                        <div class="host-name">房主: ${room.host_name}</div>
+                        <div class="room-status ${room.status === 'waiting' ? 'text-success' : 'text-warning'}">
+                            <i class="fas fa-circle"></i> 
+                            ${room.status === 'waiting' ? '等待中' : '游戏中'}
+                        </div>
+                        <div class="room-categories">
+                            ${room.story_type ? `<span class="category">类型: ${STORY_CATEGORIES.type[room.story_type]}</span>` : ''}
+                            ${room.difficulty ? `<span class="category">难度: ${STORY_CATEGORIES.difficulty[room.difficulty]}</span>` : ''}
+                            ${room.theme ? `<span class="category">主题: ${STORY_CATEGORIES.theme[room.theme]}</span>` : ''}
+                        </div>
+                    </div>
+                    <button class="join-btn" onclick="requestJoinRoom('${room.room_id}')" 
+                            ${room.status !== 'waiting' ? 'disabled' : ''}>
+                        ${room.status === 'waiting' ? '加入房间' : '游戏中'}
+                    </button>
+                `;
+                roomList.appendChild(roomDiv);
+            });
+        }
+
+        // 修改处理加入请求的函数
+        async function handleJoinRequest(targetPlayerName, accept) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/multi/handle_join_request`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        X_API_KEY: apiKey,
+                        room_id: currentRoom,
+                        host_name: playerName,  // 使用当前玩家名称（房主）
+                        player_name: targetPlayerName,  // 使用目标玩家名称
+                        accept: accept
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.status === 'success') {
+                    showSteamDialog('操作成功', data.message, [{
+                        text: '确定',
+                        class: 'btn-primary',
+                        onClick: () => {}
+                    }]);
+                } else {
+                    throw new Error(data.message || '处理请求失败');
+                }
+            } catch (error) {
+                console.error('处理加入请求失败:', error);
+                showSteamDialog('错误', error.message || '处理加入请求失败', [{
+                    text: '确定',
+                    class: 'btn-danger',
+                    onClick: () => {}
+                }]);
+            }
+        }
+
+        // 修改更新加入请求列表的函数
+        function updateJoinRequests(requests) {
+            const requestsList = document.getElementById('joinRequestsList');
+            if (!requestsList) return;
+            
+            requestsList.innerHTML = '';
+            console.log('Updating join requests:', requests);
+            
+            if (!requests || requests.length === 0) {
+                requestsList.innerHTML = '<div class="text-muted">暂无加入请求</div>';
+                return;
+            }
+            
+            requests.forEach(request => {
+                const requestDiv = document.createElement('div');
+                requestDiv.className = 'request-item';
+                requestDiv.innerHTML = `
+                    <span>${request.name} 请求加入</span>
+                    <div class="request-buttons">
+                        <button class="btn btn-custom btn-sm" onclick="handleJoinRequest('${request.name}', true)">
+                            <i class="fas fa-check"></i> 接受
+                        </button>
+                        <button class="btn btn-custom btn-sm" onclick="handleJoinRequest('${request.name}', false)">
+                            <i class="fas fa-times"></i> 拒绝
+                        </button>
+                    </div>
+                `;
+                requestsList.appendChild(requestDiv);
+            });
+        }
+
+        // 添加定时刷新房间列表的功能
+        setInterval(() => {
+            if (!currentRoom) {  // 只在未加入房间时刷新列表
+                getRoomList();
+            }
+        }, 5000);
+
+        // 关闭 Steam 风格弹框
+        function closeSteamDialog() {
+            document.getElementById('steamDialog').style.display = 'none';
+        }
+
+        // 在页面加载完成后初始化弹框
+        document.addEventListener('DOMContentLoaded', () => {
+            addSteamDialog();
+        });
+
+        // 修改 showSteamDialog 函数支持自定义内容
+        function showSteamDialog(title, message, buttons = [], customContent = '') {
+            const dialog = document.getElementById('steamDialog');
+            const titleEl = dialog.querySelector('.dialog-title');
+            const bodyEl = dialog.querySelector('.dialog-body');
+            const buttonsEl = dialog.querySelector('.dialog-buttons');
+            
+            titleEl.textContent = title;
+            
+            // 支持自定义内容
+            if (customContent) {
+                bodyEl.innerHTML = message + '<br>' + customContent;
+            } else {
+                bodyEl.textContent = message;
+            }
+            
+            // 清除之前的按钮
+            buttonsEl.innerHTML = '';
+            
+            // 添加新按钮
+            buttons.forEach(btn => {
+                const button = document.createElement('button');
+                button.className = `btn btn-custom ${btn.class || ''}`;
+                button.textContent = btn.text;
+                button.onclick = () => {
+                    btn.onClick();
+                    if (btn.keepOpen !== true) {
+                        closeSteamDialog();
+                    }
+                };
+                buttonsEl.appendChild(button);
+            });
+            
+            dialog.style.display = 'flex';
+            
+            // 如果有输入框，自动聚焦
+            const input = dialog.querySelector('input');
+            if (input) {
+                input.focus();
+                // 添加回车键支持
+                input.onkeypress = (e) => {
+                    if (e.key === 'Enter') {
+                        const confirmBtn = buttonsEl.querySelector('.btn-primary');
+                        if (confirmBtn) {
+                            confirmBtn.click();
+                        }
+                    }
+                };
+            }
+        }
+
+        // 添加初始化弹框的函数
+        function addSteamDialog() {
+            const dialogHTML = `
+                <div id="steamDialog" class="steam-dialog" style="display: none;">
+                    <div class="steam-dialog-content">
+                        <div class="steam-dialog-header">
+                            <h4 class="dialog-title"></h4>
+                            <button class="close-btn" onclick="closeSteamDialog()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="dialog-body"></div>
+                        <div class="dialog-buttons"></div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', dialogHTML);
+        }
+
+        // ... 现有代码 ...
+
+        // 修改初始化提示的显示逻辑
+        function showInitDialog() {
+            showSteamDialog('欢迎', '欢迎来到海龟汤推理游戏！', [
+                {
+                    text: '开始游戏',
+                    class: 'btn-primary',
+                    onClick: () => {
+                        // 设置已初始化标记
+                        localStorage.setItem('initialized', 'true');
+                        // 可以在这里添加其他初始化逻辑
+                    }
+                }
+            ]);
+        }
+
+        // 检查是否需要显示初始化提示
+        if (!localStorage.getItem('initialized')) {
+            showInitDialog();
+        }
+
+        // ... 其余代码 ...
+    </script>
+</body>
+</html>
