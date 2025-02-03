@@ -1,0 +1,21 @@
+﻿{
+    "version": 2,
+    "builds": [
+        {
+            "src": "app.py",
+            "use": "@vercel/python"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "app.py"
+        }
+    ],
+    "env": {
+        "SPARKAI_APP_ID": "6126ea78",
+        "SPARKAI_API_SECRET": "OTgxMmNmNjlhNjcxOGI5YTZkZjI5NWZk",
+        "SPARKAI_API_KEY": "9a551368ad829cf9d47e9cc22716a179",
+        "SECRET_KEY": "dev"
+    }
+}
